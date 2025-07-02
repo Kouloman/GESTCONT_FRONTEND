@@ -1,12 +1,9 @@
-import React from 'react';
-
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Box, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { toast } from 'react-toastify';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 // Validation schema
@@ -21,16 +18,16 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginError, setLoginError] = useState('');
 
   const handleSubmit = async (values) => {
     setIsSubmitting(true);
-    
+    setLoginError('');
     try {
       await login(values.username, values.password);
-      toast.success('Connexion réussie');
       navigate('/');
     } catch (error) {
-      toast.error('Identifiants invalides');
+      setLoginError('Identifiants invalides');
     } finally {
       setIsSubmitting(false);
     }
@@ -55,6 +52,9 @@ const Login = () => {
         >
           {({ isSubmitting: formikSubmitting }) => (
             <Form className="space-y-4">
+              {loginError && (
+                <div className="text-red-500 text-center text-sm">{loginError}</div>
+              )}
               <div>
                 <label htmlFor="username" className="form-label">Nom d'utilisateur</label>
                 <Field
@@ -95,8 +95,6 @@ const Login = () => {
               </div>
               
               <div className="text-center text-sm text-gray-500 mt-4">
-               {/*  <p>En mode développement, utilisez:</p>
-                <p className="font-medium">admin / admin123</p> */}
                 <p>Voir le README pour vous connecter</p>
               </div>
             </Form>

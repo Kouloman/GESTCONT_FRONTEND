@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify'; // Supprimé
 
 // Create axios instance
 const api = axios.create({
@@ -36,22 +36,19 @@ api.interceptors.response.use(
     if (response) {
       if (response.status === 401) {
         Cookies.remove('auth_token');
-        toast.error('Votre session a expiré. Veuillez vous reconnecter.');
         window.location.href = '/login';
       } else if (response.status === 403) {
-        toast.error('Vous n\'avez pas les autorisations nécessaires pour cette action.');
+        // 403 interdit : aucune notification toast
       } else if (response.status === 404) {
-        toast.error('La ressource demandée n\'a pas été trouvée.');
+        // 404 non trouvé : aucune notification toast
       } else if (response.status === 500) {
-        toast.error('Une erreur serveur est survenue. Veuillez réessayer ultérieurement.');
+        // 500 erreur serveur : aucune notification toast
       } else {
-        // Display error message from backend if available
-        const errorMessage = response.data?.message || 'Une erreur est survenue';
-        toast.error(errorMessage);
+        // Autres erreurs : aucune notification toast
       }
     } else {
       // Network error or server not reachable
-      toast.error('Impossible de se connecter au serveur. Vérifiez votre connexion internet.');
+      // Pas de toast ici non plus
       
       // In development mode, we'll handle the request in mock services
       if (import.meta.env.DEV) {
